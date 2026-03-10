@@ -16,10 +16,20 @@ jobs:
 
       - name: Setup export templates
         run: |
+          echo "HOME=$HOME"
+          echo "--- Finding templates ---"
+          find / -name "*.zip" -path "*/templates/*" 2>/dev/null || true
+          find / -name "web_*" 2>/dev/null || true
+          echo "--- /root contents ---"
+          ls -la /root/.local/share/godot/ 2>/dev/null || echo "no /root/.local/share/godot"
+          ls -la /root/.local/share/godot/templates/ 2>/dev/null || echo "no templates dir"
+          ls -la /root/.local/share/godot/export_templates/ 2>/dev/null || echo "no export_templates dir"
           TEMPLATE_DIR="$HOME/.local/share/godot/export_templates/4.6.1.stable"
           mkdir -p "$TEMPLATE_DIR"
           cp /root/.local/share/godot/templates/* "$TEMPLATE_DIR/" 2>/dev/null || true
-          ls "$TEMPLATE_DIR/" | head -20
+          cp /root/.local/share/godot/export_templates/4.6.1.stable/* "$TEMPLATE_DIR/" 2>/dev/null || true
+          echo "--- Result ---"
+          ls -la "$TEMPLATE_DIR/" || echo "empty"
 
       - name: Import project resources
         run: godot --headless --import 2>&1 || true
