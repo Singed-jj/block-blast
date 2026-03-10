@@ -16,20 +16,9 @@ jobs:
 
       - name: Setup export templates
         run: |
-          echo "HOME=$HOME"
-          echo "--- Finding templates ---"
-          find / -name "*.zip" -path "*/templates/*" 2>/dev/null || true
-          find / -name "web_*" 2>/dev/null || true
-          echo "--- /root contents ---"
-          ls -la /root/.local/share/godot/ 2>/dev/null || echo "no /root/.local/share/godot"
-          ls -la /root/.local/share/godot/templates/ 2>/dev/null || echo "no templates dir"
-          ls -la /root/.local/share/godot/export_templates/ 2>/dev/null || echo "no export_templates dir"
           TEMPLATE_DIR="$HOME/.local/share/godot/export_templates/4.6.1.stable"
           mkdir -p "$TEMPLATE_DIR"
-          cp /root/.local/share/godot/templates/* "$TEMPLATE_DIR/" 2>/dev/null || true
-          cp /root/.local/share/godot/export_templates/4.6.1.stable/* "$TEMPLATE_DIR/" 2>/dev/null || true
-          echo "--- Result ---"
-          ls -la "$TEMPLATE_DIR/" || echo "empty"
+          cp /root/.local/share/godot/export_templates/4.6.1.stable/* "$TEMPLATE_DIR/"
 
       - name: Import project resources
         run: godot --headless --import 2>&1 || true
@@ -37,11 +26,20 @@ jobs:
       - name: Export to Web
         run: |
           mkdir -p dist
-          godot --headless --export-release "Web" dist/index.html
+          godot --headless --verbose --export-release "Web" dist/index.html 2>&1 || true
+          ls -la dist/
+
+      - name: Verify export
+        run: |
+          if [ ! -f dist/index.html ]; then
+            echo "Export failed - trying export-debug"
+            godot --headless --verbose --export-debug "Web" dist/index.html 2>&1
+          fi
+          ls -la dist/
 
       - name: Add COOP/COEP headers config
         run: |
-          cat > dist/vercel.json << 'EOF'
+          cat > dist/vercel.json << 'EOFVERCEL'
           {
             "headers": [
               {
@@ -53,7 +51,7 @@ jobs:
               }
             ]
           }
-          EOF
+          EOFVERCEL
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25

@@ -1,6 +1,6 @@
 # Godot
 .godot/
-*.uid
+# *.uid — Godot 4.6+ UID 파일은 export에 필요하므로 추적
 dist/
 
 # OS
