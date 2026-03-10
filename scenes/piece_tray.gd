@@ -23,6 +23,12 @@ func generate_new_set() -> void:
 		piece.placed.connect(_on_piece_placed)
 		add_child(piece)
 		pieces.append(piece)
+	# Sparkle effect on new set
+	for j in 5:
+		var sparkle := Label.new()
+		sparkle.set_script(preload("res://effects/tray_sparkle.gd"))
+		add_child(sparkle)
+		sparkle.show_sparkle(global_position + Vector2(size.x * randf(), 0))
 
 func get_remaining_shapes() -> Array:
 	var shapes: Array = []
