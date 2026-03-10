@@ -49,12 +49,12 @@ func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 	game_board.sync_visual()
 
 	# Check line clears
-	var lines := game_board.find_complete_lines()
-	var total_lines := lines["rows"].size() + lines["cols"].size()
+	var lines: Dictionary = game_board.find_complete_lines()
+	var total_lines: int = lines["rows"].size() + lines["cols"].size()
 
 	if total_lines > 0:
-		var cleared := game_board.clear_lines(lines)
-		var points := GameState.add_line_clear_score(total_lines)
+		var cleared: Array[Vector2i] = game_board.clear_lines(lines)
+		var points: int = GameState.add_line_clear_score(total_lines)
 
 		# Animate clear with gold lines for columns
 		game_board.animate_clear(cleared, lines["rows"], lines["cols"])
@@ -92,7 +92,7 @@ func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 	_check_game_over()
 
 func _check_game_over() -> void:
-	var remaining_shapes := piece_tray.get_remaining_shapes()
+	var remaining_shapes: Array = piece_tray.get_remaining_shapes()
 	if remaining_shapes.is_empty():
 		return
 	if not game_board.has_any_valid_placement(remaining_shapes):

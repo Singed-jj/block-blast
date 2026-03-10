@@ -23,8 +23,8 @@ func is_cell_occupied(col: int, row: int) -> bool:
 
 func can_place_shape(shape: Array, origin: Vector2i) -> bool:
 	for offset in shape:
-		var col := origin.x + offset.x
-		var row := origin.y + offset.y
+		var col: int = origin.x + int(offset.x)
+		var row: int = origin.y + int(offset.y)
 		if col < 0 or col >= GRID_SIZE:
 			return false
 		if row < 0 or row >= GRID_SIZE:
@@ -35,8 +35,8 @@ func can_place_shape(shape: Array, origin: Vector2i) -> bool:
 
 func place_shape(shape: Array, origin: Vector2i, color: Color) -> void:
 	for offset in shape:
-		var col := origin.x + offset.x
-		var row := origin.y + offset.y
+		var col: int = origin.x + int(offset.x)
+		var row: int = origin.y + int(offset.y)
 		grid[row][col]["occupied"] = true
 		grid[row][col]["color"] = color
 	piece_placed.emit(origin)
@@ -75,7 +75,7 @@ func clear_lines(lines: Dictionary) -> Array[Vector2i]:
 				cleared_cells.append(Vector2i(col, row))
 				grid[row][col]["occupied"] = false
 				grid[row][col]["color"] = Color.TRANSPARENT
-	var total_lines := lines["rows"].size() + lines["cols"].size()
+	var total_lines: int = lines["rows"].size() + lines["cols"].size()
 	if total_lines > 0:
 		lines_cleared.emit(lines["rows"], lines["cols"])
 	return cleared_cells
