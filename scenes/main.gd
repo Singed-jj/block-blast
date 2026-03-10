@@ -13,6 +13,8 @@ func _ready() -> void:
 	piece_tray.all_pieces_placed.connect(_on_all_pieces_placed)
 	game_over_screen.play_again_pressed.connect(_on_play_again)
 	GameState.game_over_triggered.connect(_on_game_over)
+	# Defer to ensure layout sizes are resolved before positioning pieces
+	await get_tree().process_frame
 	_start_new_game()
 
 func _start_new_game() -> void:
