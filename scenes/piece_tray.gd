@@ -13,6 +13,7 @@ func generate_new_set() -> void:
 		if is_instance_valid(piece):
 			piece.queue_free()
 	pieces.clear()
+	var new_pieces: Array[Node2D] = []
 	for i in MAX_PIECES:
 		var piece: Node2D = block_piece_scene.instantiate()
 		var shape_name := Constants.get_random_shape_name()
@@ -22,13 +23,28 @@ func generate_new_set() -> void:
 		piece.drag_ended.connect(_on_piece_drag_ended)
 		piece.placed.connect(_on_piece_placed)
 		add_child(piece)
+		new_pieces.append(piece)
 		pieces.append(piece)
+	_layout_pieces(new_pieces)
 	# Sparkle effect on new set
 	for j in 5:
 		var sparkle := Label.new()
 		sparkle.set_script(preload("res://effects/tray_sparkle.gd"))
 		add_child(sparkle)
 		sparkle.show_sparkle(global_position + Vector2(size.x * randf(), 0))
+
+func _layout_pieces(piece_list: Array[Node2D]) -> void:
+	var tray_width := size.x if size.x > 0 else 350.0
+	var slot_width := tray_width / MAX_PIECES
+	for i in piece_list.size():
+		var piece := piece_list[i]
+		var bounding := piece.get_bounding_size() * piece.scale
+		var slot_center_x := slot_width * i + slot_width * 0.5
+		piece.position = Vector2(
+			slot_center_x - bounding.x * 0.5,
+			(size.y - bounding.y) * 0.5 if size.y > 0 else 10.0
+		)
+		piece.original_position = piece.position
 
 func get_remaining_shapes() -> Array:
 	var shapes: Array = []
