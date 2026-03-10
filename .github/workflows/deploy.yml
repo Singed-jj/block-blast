@@ -3,6 +3,7 @@ name: Deploy to Vercel
 on:
   push:
     branches: [main]
+  workflow_dispatch:
 
 jobs:
   export-and-deploy:
@@ -17,6 +18,9 @@ jobs:
         run: |
           mkdir -p /root/.local/share/godot/export_templates/4.6.1.stable
           mv /root/.local/share/godot/templates/* /root/.local/share/godot/export_templates/4.6.1.stable/ || true
+
+      - name: Import project resources
+        run: godot --headless --import 2>&1 || true
 
       - name: Export to Web
         run: |
