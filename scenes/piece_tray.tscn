@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scenes/piece_tray.gd" id="1"]
+
+[node name="PieceTray" type="HBoxContainer"]
+script = ExtResource("1")
+custom_minimum_size = Vector2(390, 120)
+alignment = 1
