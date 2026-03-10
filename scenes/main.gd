@@ -43,10 +43,25 @@ func _on_piece_drag_ended(piece: Node2D) -> void:
 	else:
 		piece.snap_back()
 
+func _haptic_place() -> void:
+	Input.vibrate_handheld(30)
+
+func _haptic_line_clear(line_index: int, total_lines: int) -> void:
+	# Each successive line vibrates longer and stronger
+	var base_ms := 40
+	var duration := base_ms + line_index * 30
+	var delay := line_index * 0.15
+	get_tree().create_timer(delay).timeout.connect(
+		func(): Input.vibrate_handheld(duration)
+	)
+
 func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 	game_board.place_shape(piece.shape_cells, grid_pos, piece.block_color)
 	piece.mark_placed()
 	game_board.sync_visual()
+
+	# Haptic on placement
+	_haptic_place()
 
 	# Check line clears
 	var lines: Dictionary = game_board.find_complete_lines()
@@ -55,6 +70,10 @@ func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 	if total_lines > 0:
 		var cleared: Array[Vector2i] = game_board.clear_lines(lines)
 		var points: int = GameState.add_line_clear_score(total_lines)
+
+		# Haptic for each line cleared — escalating intensity
+		for i in total_lines:
+			_haptic_line_clear(i, total_lines)
 
 		# Animate clear with gold lines for columns
 		game_board.animate_clear(cleared, lines["rows"], lines["cols"])
