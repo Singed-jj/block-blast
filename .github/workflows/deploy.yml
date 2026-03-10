@@ -6,11 +6,10 @@ on:
   workflow_dispatch:
 
 jobs:
-  export-and-deploy:
+  export:
     runs-on: ubuntu-latest
     container:
       image: barichello/godot-ci:4.6.1
-
     steps:
       - uses: actions/checkout@v4
 
@@ -46,6 +45,24 @@ jobs:
             ]
           }
           EOFJSON
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-export
+          path: dist/
+
+  deploy:
+    needs: export
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-export
+          path: dist/
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
