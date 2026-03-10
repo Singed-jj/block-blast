@@ -38,7 +38,7 @@ func _layout_pieces(piece_list: Array[Node2D]) -> void:
 	var slot_width := tray_width / MAX_PIECES
 	for i in piece_list.size():
 		var piece := piece_list[i]
-		var bounding := piece.get_bounding_size() * piece.scale
+		var bounding: Vector2 = piece.get_bounding_size() * piece.scale
 		var slot_center_x := slot_width * i + slot_width * 0.5
 		piece.position = Vector2(
 			slot_center_x - bounding.x * 0.5,
