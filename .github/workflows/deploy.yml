@@ -16,8 +16,10 @@ jobs:
 
       - name: Setup export templates
         run: |
-          mkdir -p /root/.local/share/godot/export_templates/4.6.1.stable
-          mv /root/.local/share/godot/templates/* /root/.local/share/godot/export_templates/4.6.1.stable/ || true
+          TEMPLATE_DIR="$HOME/.local/share/godot/export_templates/4.6.1.stable"
+          mkdir -p "$TEMPLATE_DIR"
+          cp /root/.local/share/godot/templates/* "$TEMPLATE_DIR/" 2>/dev/null || true
+          ls "$TEMPLATE_DIR/" | head -20
 
       - name: Import project resources
         run: godot --headless --import 2>&1 || true
