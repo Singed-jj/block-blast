@@ -26,20 +26,11 @@ jobs:
       - name: Export to Web
         run: |
           mkdir -p dist
-          godot --headless --verbose --export-release "Web" dist/index.html 2>&1 || true
-          ls -la dist/
-
-      - name: Verify export
-        run: |
-          if [ ! -f dist/index.html ]; then
-            echo "Export failed - trying export-debug"
-            godot --headless --verbose --export-debug "Web" dist/index.html 2>&1
-          fi
-          ls -la dist/
+          godot --headless --export-release "Web" dist/index.html
 
       - name: Add COOP/COEP headers config
         run: |
-          cat > dist/vercel.json << 'EOFVERCEL'
+          cat > dist/vercel.json << 'EOFJSON'
           {
             "headers": [
               {
@@ -51,7 +42,7 @@ jobs:
               }
             ]
           }
-          EOFVERCEL
+          EOFJSON
 
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
