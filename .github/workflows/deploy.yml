@@ -30,10 +30,13 @@ jobs:
           mkdir -p dist
           godot --headless --export-release "Web" dist/index.html
 
-      - name: Add COOP/COEP headers config
+      - name: Prepare Vercel output structure
         run: |
-          cat > dist/vercel.json << 'EOFJSON'
+          mkdir -p .vercel-output/static
+          mv dist/* .vercel-output/static/
+          cat > .vercel-output/config.json << 'EOFJSON'
           {
+            "version": 3,
             "headers": [
               {
                 "source": "/(.*)",
@@ -50,7 +53,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: web-export
-          path: dist/
+          path: .vercel-output/
 
   deploy:
     needs: export
@@ -60,18 +63,17 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: web-export
-          path: dist/
+          path: .vercel/output/
 
       - name: Install Vercel CLI
         run: npm install -g vercel@latest
 
       - name: Link Vercel project
         run: |
-          mkdir -p .vercel
           echo '{"orgId":"'$VERCEL_ORG_ID'","projectId":"'$VERCEL_PROJECT_ID'"}' > .vercel/project.json
         env:
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
       - name: Deploy to Vercel
-        run: vercel deploy ./dist --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel deploy --prebuilt --prod --yes --token=${{ secrets.VERCEL_TOKEN }}
