@@ -1,0 +1,7 @@
+# Godot
+.godot/
+*.uid
+dist/
+
+# OS
+.DS_Store

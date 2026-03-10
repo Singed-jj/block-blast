@@ -1,0 +1,49 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  export-and-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: barichello/godot-ci:4.6.1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup export templates
+        run: |
+          mkdir -p /root/.local/share/godot/export_templates/4.6.1.stable
+          mv /root/.local/share/godot/templates/* /root/.local/share/godot/export_templates/4.6.1.stable/ || true
+
+      - name: Export to Web
+        run: |
+          mkdir -p dist
+          godot --headless --export-release "Web" dist/index.html
+
+      - name: Add COOP/COEP headers config
+        run: |
+          cat > dist/vercel.json << 'EOF'
+          {
+            "headers": [
+              {
+                "source": "/(.*)",
+                "headers": [
+                  { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
+                  { "key": "Cross-Origin-Embedder-Policy", "value": "require-corp" }
+                ]
+              }
+            ]
+          }
+          EOF
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: dist
+          vercel-args: '--prod'
