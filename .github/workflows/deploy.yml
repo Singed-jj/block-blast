@@ -30,11 +30,30 @@ jobs:
           mkdir -p dist
           godot --headless --export-release "Web" dist/index.html
 
-      - name: Prepare Vercel output structure
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: web-export
+          path: dist/
+
+  deploy:
+    needs: export
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: web-export
+          path: dist/
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Prepare Vercel prebuilt output
         run: |
-          mkdir -p .vercel-output/static
-          mv dist/* .vercel-output/static/
-          cat > .vercel-output/config.json << 'EOFJSON'
+          mkdir -p .vercel/output/static
+          cp dist/* .vercel/output/static/
+          cat > .vercel/output/config.json << 'EOF'
           {
             "version": 3,
             "headers": [
@@ -47,26 +66,7 @@ jobs:
               }
             ]
           }
-          EOFJSON
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: web-export
-          path: .vercel-output/
-
-  deploy:
-    needs: export
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: web-export
-          path: .vercel/output/
-
-      - name: Install Vercel CLI
-        run: npm install -g vercel@latest
+          EOF
 
       - name: Link Vercel project
         run: |
