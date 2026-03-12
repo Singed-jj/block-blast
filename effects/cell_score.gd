@@ -2,6 +2,7 @@ extends Label
 
 func show_cell_score(points: int, pos: Vector2, delay: float = 0.0) -> void:
 	text = str(points)
+	add_theme_font_override("font", load("res://assets/fonts/default_font.tres"))
 	add_theme_font_size_override("font_size", 16)
 	add_theme_color_override("font_color", Color(1, 1, 1, 0.9))
 	horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

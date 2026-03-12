@@ -4,6 +4,7 @@ func show_combo(combo_count: int, start_pos: Vector2) -> void:
 	# 메인 Label은 "Combo " 부분 (시안)
 	text = "Combo "
 	global_position = start_pos
+	add_theme_font_override("font", load("res://assets/fonts/default_font.tres"))
 	add_theme_font_size_override("font_size", 44)
 	add_theme_color_override("font_color", Color("#00BFFF"))
 	pivot_offset = Vector2(90, 24)

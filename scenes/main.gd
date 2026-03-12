@@ -81,6 +81,7 @@ func _on_piece_drag_ended(piece: Node2D) -> void:
 	if game_board.can_place_shape(piece.shape_cells, grid_pos):
 		_place_piece(piece, grid_pos)
 	else:
+		SoundManager.error()
 		piece.snap_back()
 
 func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
@@ -173,6 +174,7 @@ func _on_all_pieces_placed() -> void:
 	_check_game_over()
 
 func _on_game_over() -> void:
+	SoundManager.game_over()
 	game_over_screen.show_game_over(GameState.score, GameState.best_score)
 
 func _on_play_again() -> void:

@@ -39,6 +39,7 @@ func heavy() -> void:
 
 func place_block() -> void:
 	vibrate(Intensity.MEDIUM)
+	SoundManager.place_block()
 
 func line_clear(line_index: int, total_lines: int) -> void:
 	var base_intensity := Intensity.MEDIUM if total_lines <= 2 else Intensity.HEAVY
@@ -49,6 +50,7 @@ func line_clear(line_index: int, total_lines: int) -> void:
 		)
 	else:
 		vibrate(base_intensity)
+	SoundManager.line_clear(line_index, total_lines)
 
 func combo(combo_count: int) -> void:
 	var intensity := Intensity.HEAVY if combo_count >= 4 else Intensity.MEDIUM
@@ -57,9 +59,11 @@ func combo(combo_count: int) -> void:
 		get_tree().create_timer(0.1).timeout.connect(
 			func(): vibrate(Intensity.LIGHT)
 		)
+	SoundManager.combo(combo_count)
 
 func new_pieces() -> void:
 	vibrate(Intensity.LIGHT)
+	SoundManager.new_pieces()
 
 func score_pulse() -> void:
 	vibrate(Intensity.LIGHT)

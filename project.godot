@@ -23,6 +23,7 @@ config/features=PackedStringArray("4.6")
 Constants="*res://autoloads/constants.gd"
 GameState="*res://autoloads/game_state.gd"
 HapticManager="*res://autoloads/haptic_manager.gd"
+SoundManager="*res://autoloads/sound_manager.gd"
 
 [display]
 
@@ -34,7 +35,7 @@ window/handheld/orientation=1
 
 [gui]
 
-theme/custom_font="res://assets/fonts/NotoSansKR-Regular.ttf"
+theme/custom_font="res://assets/fonts/default_font.tres"
 
 [rendering]
 
