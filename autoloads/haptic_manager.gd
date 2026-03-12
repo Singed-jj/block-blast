@@ -12,9 +12,52 @@ const VIBRATION_MS := {
 	Intensity.ERROR: 80,
 }
 
+var _is_web: bool = false
+var _haptic_initialized: bool = false
+
+func _ready() -> void:
+	_is_web = OS.has_feature("web")
+	if _is_web:
+		_setup_web_haptics()
+
+func _setup_web_haptics() -> void:
+	JavaScriptBridge.eval("""
+	(function() {
+		window.__haptic = {
+			_checkbox: null,
+			_initCheckbox: function() {
+				if (this._checkbox) return;
+				var cb = document.createElement('input');
+				cb.type = 'checkbox';
+				cb.setAttribute('switch', '');
+				cb.style.position = 'fixed';
+				cb.style.opacity = '0';
+				cb.style.pointerEvents = 'none';
+				document.body.appendChild(cb);
+				this._checkbox = cb;
+			},
+			trigger: function(ms) {
+				if (navigator.vibrate) {
+					navigator.vibrate(ms);
+					return;
+				}
+				this._initCheckbox();
+				if (this._checkbox) {
+					this._checkbox.click();
+				}
+			}
+		};
+	})();
+	""")
+	_haptic_initialized = true
+
 func vibrate(intensity: Intensity = Intensity.MEDIUM) -> void:
 	var ms: int = VIBRATION_MS.get(intensity, 30)
-	Input.vibrate_handheld(ms)
+	if _is_web:
+		if _haptic_initialized:
+			JavaScriptBridge.eval("window.__haptic.trigger(%d)" % ms)
+	else:
+		Input.vibrate_handheld(ms)
 
 func vibrate_pattern(pattern: Array) -> void:
 	for i in pattern.size():
