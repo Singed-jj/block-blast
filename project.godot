@@ -28,9 +28,13 @@ HapticManager="*res://autoloads/haptic_manager.gd"
 
 window/size/viewport_width=390
 window/size/viewport_height=844
-window/stretch/mode="viewport"
-window/stretch/aspect="expand"
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep_width"
 window/handheld/orientation=1
+
+[gui]
+
+theme/default_font="res://assets/fonts/NotoSansKR-Regular.ttf"
 
 [rendering]
 
