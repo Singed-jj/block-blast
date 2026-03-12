@@ -140,11 +140,18 @@ func _draw() -> void:
 	var board_size := GRID_SIZE * CELL_SIZE
 	# 보드 배경
 	draw_rect(Rect2(0, 0, board_size, board_size), Constants.BG_GRID, true)
+	# 미묘한 inner border/bevel
+	draw_line(Vector2(0, 0), Vector2(board_size, 0), Color(1, 1, 1, 0.1), 1.0, true)
+	draw_line(Vector2(0, 0), Vector2(0, board_size), Color(1, 1, 1, 0.05), 1.0, true)
+	draw_line(Vector2(0, board_size), Vector2(board_size, board_size), Color(0, 0, 0, 0.2), 1.0, true)
+	draw_line(Vector2(board_size, 0), Vector2(board_size, board_size), Color(0, 0, 0, 0.1), 1.0, true)
 	# 그리드 라인 — 내부 구분선
 	for i in range(1, GRID_SIZE):
 		var offset := i * CELL_SIZE
 		draw_line(Vector2(0, offset), Vector2(board_size, offset), Constants.GRID_LINE, 1.0, true)
 		draw_line(Vector2(offset, 0), Vector2(offset, board_size), Constants.GRID_LINE, 1.0, true)
+	# 보드-트레이 구분선
+	draw_line(Vector2(0, board_size + 15), Vector2(board_size, board_size + 15), Color(1, 1, 1, 0.1), 1.0, true)
 
 func animate_clear(cleared_cells: Array[Vector2i], rows: Array[int], cols: Array[int]) -> void:
 	for pos in cleared_cells:

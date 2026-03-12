@@ -6,7 +6,7 @@ var block_color := Color.TRANSPARENT
 
 func setup(col: int, row: int) -> void:
 	grid_pos = Vector2i(col, row)
-	size = Vector2(Constants.CELL_SIZE, Constants.CELL_SIZE)
+	size = Vector2(Constants.CELL_SIZE - 1, Constants.CELL_SIZE - 1)
 	position = Vector2(col * Constants.CELL_SIZE, row * Constants.CELL_SIZE)
 	_update_visual()
 
@@ -35,32 +35,38 @@ func _ensure_bevel() -> void:
 		return
 	var top := ColorRect.new()
 	top.name = "TopHighlight"
-	top.size = Vector2(size.x, 2)
-	top.color = Color(1, 1, 1, 0.3)
+	top.size = Vector2(size.x, 3)
+	top.color = Color(1, 1, 1, 0.4)
 	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(top)
 	var left := ColorRect.new()
 	left.name = "LeftHighlight"
-	left.size = Vector2(2, size.y)
-	left.color = Color(1, 1, 1, 0.15)
+	left.size = Vector2(3, size.y)
+	left.color = Color(1, 1, 1, 0.25)
 	left.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(left)
 	var bottom := ColorRect.new()
 	bottom.name = "BottomShadow"
-	bottom.size = Vector2(size.x, 2)
-	bottom.position.y = size.y - 2
-	bottom.color = Color(0, 0, 0, 0.3)
+	bottom.size = Vector2(size.x, 3)
+	bottom.position.y = size.y - 3
+	bottom.color = Color(0, 0, 0, 0.4)
 	bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(bottom)
 	var right := ColorRect.new()
 	right.name = "RightShadow"
-	right.size = Vector2(2, size.y)
-	right.position.x = size.x - 2
-	right.color = Color(0, 0, 0, 0.15)
+	right.size = Vector2(3, size.y)
+	right.position.x = size.x - 3
+	right.color = Color(0, 0, 0, 0.25)
 	right.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(right)
+	var overlay := ColorRect.new()
+	overlay.name = "InnerOverlay"
+	overlay.size = size
+	overlay.color = Color(1, 1, 1, 0.08)
+	overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(overlay)
 
 func _show_bevel(show: bool) -> void:
-	for child_name in ["TopHighlight", "LeftHighlight", "BottomShadow", "RightShadow"]:
+	for child_name in ["TopHighlight", "LeftHighlight", "BottomShadow", "RightShadow", "InnerOverlay"]:
 		if has_node(child_name):
 			get_node(child_name).visible = show

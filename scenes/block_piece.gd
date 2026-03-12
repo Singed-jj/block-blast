@@ -27,35 +27,41 @@ func setup(p_shape_name: String, p_color: Color) -> void:
 func _draw_cells() -> void:
 	for child in get_children():
 		child.queue_free()
+	var cell_draw_size := Constants.CELL_SIZE - 1
 	for offset in shape_cells:
 		var cell := ColorRect.new()
-		cell.size = Vector2(Constants.CELL_SIZE, Constants.CELL_SIZE)
+		cell.size = Vector2(cell_draw_size, cell_draw_size)
 		cell.position = Vector2(offset.x * Constants.CELL_SIZE, offset.y * Constants.CELL_SIZE)
 		cell.color = block_color
 		add_child(cell)
 		# Inner shadow/highlight for 3D effect
 		var top := ColorRect.new()
-		top.size = Vector2(Constants.CELL_SIZE, 2)
-		top.color = Color(1, 1, 1, 0.3)
+		top.size = Vector2(cell_draw_size, 3)
+		top.color = Color(1, 1, 1, 0.4)
 		top.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cell.add_child(top)
 		var left := ColorRect.new()
-		left.size = Vector2(2, Constants.CELL_SIZE)
-		left.color = Color(1, 1, 1, 0.15)
+		left.size = Vector2(3, cell_draw_size)
+		left.color = Color(1, 1, 1, 0.25)
 		left.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cell.add_child(left)
 		var bottom := ColorRect.new()
-		bottom.size = Vector2(Constants.CELL_SIZE, 2)
-		bottom.position.y = Constants.CELL_SIZE - 2
-		bottom.color = Color(0, 0, 0, 0.3)
+		bottom.size = Vector2(cell_draw_size, 3)
+		bottom.position.y = cell_draw_size - 3
+		bottom.color = Color(0, 0, 0, 0.4)
 		bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cell.add_child(bottom)
 		var right := ColorRect.new()
-		right.size = Vector2(2, Constants.CELL_SIZE)
-		right.position.x = Constants.CELL_SIZE - 2
-		right.color = Color(0, 0, 0, 0.15)
+		right.size = Vector2(3, cell_draw_size)
+		right.position.x = cell_draw_size - 3
+		right.color = Color(0, 0, 0, 0.25)
 		right.mouse_filter = Control.MOUSE_FILTER_IGNORE
 		cell.add_child(right)
+		var overlay := ColorRect.new()
+		overlay.size = Vector2(cell_draw_size, cell_draw_size)
+		overlay.color = Color(1, 1, 1, 0.08)
+		overlay.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(overlay)
 
 func get_bounding_size() -> Vector2:
 	var max_x := 0

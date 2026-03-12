@@ -9,15 +9,18 @@ extends Control
 func _ready() -> void:
 	var vp_width := get_viewport_rect().size.x
 
-	# Score style — 화면 중앙
-	score_label.add_theme_font_size_override("font_size", 48)
+	# Score style — 화면 중앙 (Bold 없으므로 큰 사이즈 + 그림자)
+	score_label.add_theme_font_size_override("font_size", 56)
 	score_label.add_theme_color_override("font_color", Constants.SCORE_TEXT)
+	score_label.add_theme_constant_override("shadow_offset_x", 2)
+	score_label.add_theme_constant_override("shadow_offset_y", 2)
+	score_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.3))
 	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	score_label.position = Vector2(vp_width * 0.5 - 95, 65)
-	score_label.size = Vector2(190, 50)
+	score_label.position = Vector2(vp_width * 0.5 - 95, 60)
+	score_label.size = Vector2(190, 60)
 
-	# Best score style — 좌상단
-	best_score_label.add_theme_font_size_override("font_size", 24)
+	# Best score style — 좌상단 (폰트 강화)
+	best_score_label.add_theme_font_size_override("font_size", 28)
 	best_score_label.add_theme_color_override("font_color", Constants.BEST_SCORE)
 	best_score_label.position = Vector2(50, 20)
 
