@@ -24,27 +24,23 @@ func _setup_web_haptics() -> void:
 	JavaScriptBridge.eval("""
 	(function() {
 		window.__haptic = {
-			_checkbox: null,
-			_initCheckbox: function() {
-				if (this._checkbox) return;
-				var cb = document.createElement('input');
-				cb.type = 'checkbox';
-				cb.setAttribute('switch', '');
-				cb.style.position = 'fixed';
-				cb.style.opacity = '0';
-				cb.style.pointerEvents = 'none';
-				document.body.appendChild(cb);
-				this._checkbox = cb;
-			},
 			trigger: function(ms) {
 				if (navigator.vibrate) {
 					navigator.vibrate(ms);
 					return;
 				}
-				this._initCheckbox();
-				if (this._checkbox) {
-					this._checkbox.click();
-				}
+				try {
+					var label = document.createElement('label');
+					label.ariaHidden = 'true';
+					label.style.display = 'none';
+					var input = document.createElement('input');
+					input.type = 'checkbox';
+					input.setAttribute('switch', '');
+					label.appendChild(input);
+					document.head.appendChild(label);
+					label.click();
+					document.head.removeChild(label);
+				} catch(e) {}
 			}
 		};
 	})();
