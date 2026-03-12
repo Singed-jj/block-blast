@@ -17,6 +17,7 @@ func _ready() -> void:
 	await get_tree().process_frame
 	_layout_game()
 	_start_new_game()
+	get_tree().root.size_changed.connect(_layout_game)
 
 func _layout_game() -> void:
 	var vp_size := get_viewport_rect().size
