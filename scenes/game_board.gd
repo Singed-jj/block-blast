@@ -138,6 +138,8 @@ func get_board_rect() -> Rect2:
 
 func _draw() -> void:
 	var board_size := GRID_SIZE * CELL_SIZE
+	# 보드 외곽 프레임 (반투명 밝은 패딩)
+	draw_rect(Rect2(-6, -6, board_size + 12, board_size + 12), Color(1, 1, 1, 0.08), true)
 	# 보드 배경
 	draw_rect(Rect2(0, 0, board_size, board_size), Constants.BG_GRID, true)
 	# 미묘한 inner border/bevel

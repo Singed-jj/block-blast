@@ -14,24 +14,27 @@ func _ready() -> void:
 func _style_elements() -> void:
 	# Background gradient feel via ColorRect (already set in tscn)
 
-	# "Game Over" label — cyan/mint with glow feel
+	# "Game Over" label — cyan/mint with glow feel + shadow
 	var go_label := $CenterContainer/GameOverLabel
-	go_label.add_theme_font_size_override("font_size", 52)
+	go_label.add_theme_font_size_override("font_size", 64)
 	go_label.add_theme_color_override("font_color", Color("#00E5FF"))
+	go_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.4))
+	go_label.add_theme_constant_override("shadow_offset_x", 3)
+	go_label.add_theme_constant_override("shadow_offset_y", 3)
 
-	# "Score" title label — golden/orange
+	# "Score" title label — sky blue
 	var score_title := $CenterContainer/ScoreTitle
 	score_title.add_theme_font_size_override("font_size", 22)
-	score_title.add_theme_color_override("font_color", Color("#FFB74D"))
+	score_title.add_theme_color_override("font_color", Color("#87CEEB"))
 
 	# Score number — white, large
 	final_score_label.add_theme_font_size_override("font_size", 72)
 	final_score_label.add_theme_color_override("font_color", Color.WHITE)
 
-	# "Best Score" title label — golden/orange
+	# "Best Score" title label — sky blue
 	var best_title := $CenterContainer/BestScoreTitle
 	best_title.add_theme_font_size_override("font_size", 22)
-	best_title.add_theme_color_override("font_color", Color("#FFB74D"))
+	best_title.add_theme_color_override("font_color", Color("#87CEEB"))
 
 	# Best score number — golden/orange
 	best_score_label.add_theme_font_size_override("font_size", 40)
@@ -39,7 +42,7 @@ func _style_elements() -> void:
 
 	# Green rounded play button
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#4CAF50")
+	style.bg_color = Color("#66BB6A")
 	style.corner_radius_top_left = 25
 	style.corner_radius_top_right = 25
 	style.corner_radius_bottom_left = 25
@@ -48,7 +51,7 @@ func _style_elements() -> void:
 	style.content_margin_bottom = 10.0
 
 	var hover_style := StyleBoxFlat.new()
-	hover_style.bg_color = Color("#66BB6A")
+	hover_style.bg_color = Color("#81C784")
 	hover_style.corner_radius_top_left = 25
 	hover_style.corner_radius_top_right = 25
 	hover_style.corner_radius_bottom_left = 25
@@ -57,7 +60,7 @@ func _style_elements() -> void:
 	hover_style.content_margin_bottom = 10.0
 
 	var pressed_style := StyleBoxFlat.new()
-	pressed_style.bg_color = Color("#388E3C")
+	pressed_style.bg_color = Color("#2E7D32")
 	pressed_style.corner_radius_top_left = 25
 	pressed_style.corner_radius_top_right = 25
 	pressed_style.corner_radius_bottom_left = 25

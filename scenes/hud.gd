@@ -9,12 +9,14 @@ extends Control
 func _ready() -> void:
 	var vp_width := get_viewport_rect().size.x
 
-	# Score style — 화면 중앙 (Bold 없으므로 큰 사이즈 + 그림자)
+	# Score style — 화면 중앙 (Bold 없으므로 큰 사이즈 + 그림자 + 아웃라인)
 	score_label.add_theme_font_size_override("font_size", 56)
 	score_label.add_theme_color_override("font_color", Constants.SCORE_TEXT)
 	score_label.add_theme_constant_override("shadow_offset_x", 2)
 	score_label.add_theme_constant_override("shadow_offset_y", 2)
 	score_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.3))
+	score_label.add_theme_constant_override("outline_size", 2)
+	score_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.3))
 	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	score_label.position = Vector2(vp_width * 0.5 - 95, 60)
 	score_label.size = Vector2(190, 60)
@@ -48,8 +50,10 @@ func _ready() -> void:
 	settings_button.get_parent().add_child(settings_rect)
 	settings_button.queue_free()
 
-	# Notification badge 제거
-	notification_badge.queue_free()
+	# Notification badge — 설정 아이콘 우상단 빨간 점
+	notification_badge.add_theme_font_size_override("font_size", 12)
+	notification_badge.add_theme_color_override("font_color", Color("#FF2E2E"))
+	notification_badge.position = Vector2(vp_width - 20, 12)
 
 	GameState.score_changed.connect(_on_score_changed)
 	GameState.best_score_changed.connect(_on_best_score_changed)
