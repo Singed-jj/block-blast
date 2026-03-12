@@ -14,57 +14,63 @@ func _ready() -> void:
 func _style_elements() -> void:
 	# Background gradient feel via ColorRect (already set in tscn)
 
-	# "Game Over" label — cyan/mint with glow feel + shadow
+	# "Game Over" label — cyan/mint with 3D emboss effect
 	var go_label := $CenterContainer/GameOverLabel
 	go_label.add_theme_font_size_override("font_size", 64)
 	go_label.add_theme_color_override("font_color", Color("#00E5FF"))
-	go_label.add_theme_color_override("font_shadow_color", Color(0, 0, 0, 0.4))
+	go_label.add_theme_color_override("font_shadow_color", Color(0.0, 0.1, 0.3, 0.5))
 	go_label.add_theme_constant_override("shadow_offset_x", 3)
 	go_label.add_theme_constant_override("shadow_offset_y", 3)
+	go_label.add_theme_constant_override("outline_size", 4)
+	go_label.add_theme_color_override("font_outline_color", Color(0.0, 0.5, 0.7, 0.6))
 
 	# "Score" title label — sky blue
 	var score_title := $CenterContainer/ScoreTitle
 	score_title.add_theme_font_size_override("font_size", 22)
 	score_title.add_theme_color_override("font_color", Color("#87CEEB"))
 
-	# Score number — white, large
+	# Score number — white, large, with subtle outline
 	final_score_label.add_theme_font_size_override("font_size", 72)
 	final_score_label.add_theme_color_override("font_color", Color.WHITE)
+	final_score_label.add_theme_constant_override("outline_size", 2)
+	final_score_label.add_theme_color_override("font_outline_color", Color(1, 1, 1, 0.2))
 
 	# "Best Score" title label — sky blue
 	var best_title := $CenterContainer/BestScoreTitle
 	best_title.add_theme_font_size_override("font_size", 22)
 	best_title.add_theme_color_override("font_color", Color("#87CEEB"))
 
-	# Best score number — golden/orange
+	# Best score number — deeper orange
 	best_score_label.add_theme_font_size_override("font_size", 40)
-	best_score_label.add_theme_color_override("font_color", Color("#FFB74D"))
+	best_score_label.add_theme_color_override("font_color", Color("#FFA726"))
 
-	# Green rounded play button
+	# Lime green glossy play button
+	play_button.custom_minimum_size = Vector2(280, 65)
+
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("#66BB6A")
-	style.corner_radius_top_left = 25
-	style.corner_radius_top_right = 25
-	style.corner_radius_bottom_left = 25
-	style.corner_radius_bottom_right = 25
+	style.bg_color = Color("#76FF03")
+	style.corner_radius_top_left = 30
+	style.corner_radius_top_right = 30
+	style.corner_radius_bottom_left = 30
+	style.corner_radius_bottom_right = 30
 	style.content_margin_top = 10.0
 	style.content_margin_bottom = 10.0
 
 	var hover_style := StyleBoxFlat.new()
-	hover_style.bg_color = Color("#81C784")
-	hover_style.corner_radius_top_left = 25
-	hover_style.corner_radius_top_right = 25
-	hover_style.corner_radius_bottom_left = 25
-	hover_style.corner_radius_bottom_right = 25
+	hover_style.bg_color = Color("#8AFF2A")
+	hover_style.corner_radius_top_left = 30
+	hover_style.corner_radius_top_right = 30
+	hover_style.corner_radius_bottom_left = 30
+	hover_style.corner_radius_bottom_right = 30
 	hover_style.content_margin_top = 10.0
 	hover_style.content_margin_bottom = 10.0
 
 	var pressed_style := StyleBoxFlat.new()
-	pressed_style.bg_color = Color("#2E7D32")
-	pressed_style.corner_radius_top_left = 25
-	pressed_style.corner_radius_top_right = 25
-	pressed_style.corner_radius_bottom_left = 25
-	pressed_style.corner_radius_bottom_right = 25
+	pressed_style.bg_color = Color("#4CAF50")
+	pressed_style.corner_radius_top_left = 30
+	pressed_style.corner_radius_top_right = 30
+	pressed_style.corner_radius_bottom_left = 30
+	pressed_style.corner_radius_bottom_right = 30
 	pressed_style.content_margin_top = 10.0
 	pressed_style.content_margin_bottom = 10.0
 
@@ -73,6 +79,8 @@ func _style_elements() -> void:
 	play_button.add_theme_stylebox_override("pressed", pressed_style)
 	play_button.add_theme_font_size_override("font_size", 36)
 	play_button.add_theme_color_override("font_color", Color.WHITE)
+	play_button.add_theme_constant_override("shadow_offset_y", 4)
+	play_button.add_theme_color_override("font_shadow_color", Color(0, 0.3, 0, 0.3))
 
 func show_game_over(score: int, best_score: int) -> void:
 	final_score_label.text = str(score)
