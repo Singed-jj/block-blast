@@ -56,23 +56,42 @@ func _animate_new_pieces(piece_list: Array[Node2D]) -> void:
 
 func _layout_pieces(piece_list: Array[Node2D]) -> void:
 	var tray_width := size.x if size.x > 0 else 320.0
-	var slot_width := tray_width / MAX_PIECES
+	var padding := 16.0  # 양쪽 고정 패딩
+	var usable_width := tray_width - padding * 2.0
+	# 1단계: 각 피스의 스케일과 바운딩 크기 계산
+	var scales: Array[float] = []
+	var boundings: Array[Vector2] = []
+	for piece in piece_list:
+		var base_scale: float = piece.TRAY_SCALE
+		scales.append(base_scale)
+		boundings.append(piece.get_bounding_size() * base_scale)
+	# 2단계: 전체 피스 폭 합산, 넘치면 비례 축소
+	var total_piece_width := 0.0
+	for b in boundings:
+		total_piece_width += b.x
+	var min_gap := 12.0
+	var total_needed := total_piece_width + min_gap * (piece_list.size() - 1)
+	if total_needed > usable_width:
+		var shrink := usable_width / total_needed
+		for i in piece_list.size():
+			scales[i] *= shrink
+			boundings[i] = piece_list[i].get_bounding_size() * scales[i]
+		total_piece_width = 0.0
+		for b in boundings:
+			total_piece_width += b.x
+	# 3단계: 균일 간격 배치
+	var remaining := usable_width - total_piece_width
+	var gap := remaining / (piece_list.size() + 1)
+	var cursor_x := padding + gap
 	for i in piece_list.size():
 		var piece := piece_list[i]
-		# 슬롯 폭에 맞춰 스케일 조정
-		var base_scale: float = piece.TRAY_SCALE
-		var bounding_at_base: Vector2 = piece.get_bounding_size() * base_scale
-		var max_piece_width := slot_width - 16.0  # 양쪽 8px 여백
-		if bounding_at_base.x > max_piece_width:
-			base_scale = max_piece_width / piece.get_bounding_size().x
-		piece.scale = Vector2(base_scale, base_scale)
-		var bounding: Vector2 = piece.get_bounding_size() * piece.scale
-		var slot_center_x := slot_width * i + slot_width * 0.5
+		piece.scale = Vector2(scales[i], scales[i])
 		piece.position = Vector2(
-			slot_center_x - bounding.x * 0.5,
-			(size.y - bounding.y) * 0.5 if size.y > 0 else 10.0
+			cursor_x,
+			(size.y - boundings[i].y) * 0.5 if size.y > 0 else 10.0
 		)
 		piece.original_position = piece.position
+		cursor_x += boundings[i].x + gap
 
 func get_remaining_shapes() -> Array:
 	var shapes: Array = []
