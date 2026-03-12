@@ -15,7 +15,22 @@ func _ready() -> void:
 	GameState.game_over_triggered.connect(_on_game_over)
 	# Defer to ensure layout sizes are resolved before positioning pieces
 	await get_tree().process_frame
+	_layout_game()
 	_start_new_game()
+
+func _layout_game() -> void:
+	var vp_size := get_viewport_rect().size
+	var board_size := Constants.GRID_SIZE * Constants.CELL_SIZE  # 320
+	var board_x := (vp_size.x - board_size) / 2.0
+	var board_y := vp_size.y * 0.18
+	game_board.position = Vector2(board_x, board_y)
+	# 트레이: 보드 아래 여백 두고 배치, 보드 폭과 동일하게 제한
+	var tray_y := board_y + board_size + 30
+	var tray_width := board_size
+	piece_tray.offset_left = board_x
+	piece_tray.offset_right = board_x + tray_width
+	piece_tray.offset_top = tray_y
+	piece_tray.offset_bottom = tray_y + 120
 
 func _start_new_game() -> void:
 	GameState.reset_game()

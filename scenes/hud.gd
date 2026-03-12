@@ -16,17 +16,32 @@ func _ready() -> void:
 	best_score_label.add_theme_font_size_override("font_size", 24)
 	best_score_label.add_theme_color_override("font_color", Constants.BEST_SCORE)
 
-	# Crown
-	crown_icon.add_theme_font_size_override("font_size", 24)
-	crown_icon.add_theme_color_override("font_color", Constants.BEST_SCORE)
+	# Crown icon → TextureRect (PNG)
+	var crown_tex := load("res://assets/icons/crown.png")
+	var crown_rect := TextureRect.new()
+	crown_rect.texture = crown_tex
+	crown_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	crown_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	crown_rect.custom_minimum_size = Vector2(32, 32)
+	crown_rect.size = Vector2(32, 32)
+	crown_rect.position = crown_icon.position
+	crown_icon.get_parent().add_child(crown_rect)
+	crown_icon.queue_free()
 
-	# Settings button
-	settings_button.flat = true
-	settings_button.add_theme_font_size_override("font_size", 28)
+	# Settings icon → TextureRect (PNG)
+	var settings_tex := load("res://assets/icons/settings.png")
+	var settings_rect := TextureRect.new()
+	settings_rect.texture = settings_tex
+	settings_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	settings_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	settings_rect.custom_minimum_size = Vector2(32, 32)
+	settings_rect.size = Vector2(32, 32)
+	settings_rect.position = settings_button.position
+	settings_button.get_parent().add_child(settings_rect)
+	settings_button.queue_free()
 
-	# Notification badge
-	notification_badge.add_theme_color_override("font_color", Color("#FF2E2E"))
-	notification_badge.add_theme_font_size_override("font_size", 10)
+	# Notification badge 제거
+	notification_badge.queue_free()
 
 	GameState.score_changed.connect(_on_score_changed)
 	GameState.best_score_changed.connect(_on_best_score_changed)

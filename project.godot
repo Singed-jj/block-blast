@@ -27,9 +27,8 @@ GameState="*res://autoloads/game_state.gd"
 
 window/size/viewport_width=390
 window/size/viewport_height=844
-window/size/mode=2
 window/stretch/mode="viewport"
-window/stretch/aspect="keep_width"
+window/stretch/aspect="expand"
 window/handheld/orientation=1
 
 [rendering]

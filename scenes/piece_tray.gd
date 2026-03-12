@@ -34,10 +34,17 @@ func generate_new_set() -> void:
 		sparkle.show_sparkle(global_position + Vector2(size.x * randf(), 0))
 
 func _layout_pieces(piece_list: Array[Node2D]) -> void:
-	var tray_width := size.x if size.x > 0 else 350.0
+	var tray_width := size.x if size.x > 0 else 320.0
 	var slot_width := tray_width / MAX_PIECES
 	for i in piece_list.size():
 		var piece := piece_list[i]
+		# 슬롯 폭에 맞춰 스케일 조정
+		var base_scale: float = piece.TRAY_SCALE
+		var bounding_at_base: Vector2 = piece.get_bounding_size() * base_scale
+		var max_piece_width := slot_width - 8.0  # 양쪽 4px 여백
+		if bounding_at_base.x > max_piece_width:
+			base_scale = max_piece_width / piece.get_bounding_size().x
+		piece.scale = Vector2(base_scale, base_scale)
 		var bounding: Vector2 = piece.get_bounding_size() * piece.scale
 		var slot_center_x := slot_width * i + slot_width * 0.5
 		piece.position = Vector2(

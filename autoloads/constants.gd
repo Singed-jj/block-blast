@@ -6,7 +6,7 @@ const CELL_SIZE := 40
 # Color Palette (from spec)
 const BG_PRIMARY := Color("#4A5785")
 const BG_GRID := Color("#1F2A5A")
-const GRID_LINE := Color("#2A366A")
+const GRID_LINE := Color("#374478")
 const SCORE_TEXT := Color("#F2F5FA")
 const BEST_SCORE := Color("#F3B72B")
 

@@ -13,7 +13,7 @@ var original_position := Vector2.ZERO
 var original_scale := Vector2.ONE
 var is_placed := false
 
-const TRAY_SCALE := 0.6
+const TRAY_SCALE := 0.5
 const DRAG_SCALE := 1.0
 const DRAG_Y_OFFSET := -80
 
@@ -29,10 +29,33 @@ func _draw_cells() -> void:
 		child.queue_free()
 	for offset in shape_cells:
 		var cell := ColorRect.new()
-		cell.size = Vector2(Constants.CELL_SIZE - 2, Constants.CELL_SIZE - 2)
-		cell.position = Vector2(offset.x * Constants.CELL_SIZE + 1, offset.y * Constants.CELL_SIZE + 1)
+		cell.size = Vector2(Constants.CELL_SIZE, Constants.CELL_SIZE)
+		cell.position = Vector2(offset.x * Constants.CELL_SIZE, offset.y * Constants.CELL_SIZE)
 		cell.color = block_color
 		add_child(cell)
+		# Inner shadow/highlight for 3D effect
+		var top := ColorRect.new()
+		top.size = Vector2(Constants.CELL_SIZE, 2)
+		top.color = Color(1, 1, 1, 0.3)
+		top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(top)
+		var left := ColorRect.new()
+		left.size = Vector2(2, Constants.CELL_SIZE)
+		left.color = Color(1, 1, 1, 0.15)
+		left.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(left)
+		var bottom := ColorRect.new()
+		bottom.size = Vector2(Constants.CELL_SIZE, 2)
+		bottom.position.y = Constants.CELL_SIZE - 2
+		bottom.color = Color(0, 0, 0, 0.3)
+		bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(bottom)
+		var right := ColorRect.new()
+		right.size = Vector2(2, Constants.CELL_SIZE)
+		right.position.x = Constants.CELL_SIZE - 2
+		right.color = Color(0, 0, 0, 0.15)
+		right.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		cell.add_child(right)
 
 func get_bounding_size() -> Vector2:
 	var max_x := 0

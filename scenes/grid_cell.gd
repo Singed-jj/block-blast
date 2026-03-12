@@ -24,27 +24,43 @@ func set_highlight(highlight: bool) -> void:
 func _update_visual() -> void:
 	if is_occupied:
 		color = block_color
-		if not has_node("Highlight"):
-			var highlight := ColorRect.new()
-			highlight.name = "Highlight"
-			highlight.size = Vector2(size.x, 3)
-			highlight.color = Color(1, 1, 1, 0.25)
-			highlight.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			add_child(highlight)
-			var shadow := ColorRect.new()
-			shadow.name = "Shadow"
-			shadow.size = Vector2(size.x, 3)
-			shadow.position.y = size.y - 3
-			shadow.color = Color(0, 0, 0, 0.2)
-			shadow.mouse_filter = Control.MOUSE_FILTER_IGNORE
-			add_child(shadow)
+		_ensure_bevel()
 		_show_bevel(true)
 	else:
 		color = Constants.BG_GRID
 		_show_bevel(false)
 
+func _ensure_bevel() -> void:
+	if has_node("TopHighlight"):
+		return
+	var top := ColorRect.new()
+	top.name = "TopHighlight"
+	top.size = Vector2(size.x, 2)
+	top.color = Color(1, 1, 1, 0.3)
+	top.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(top)
+	var left := ColorRect.new()
+	left.name = "LeftHighlight"
+	left.size = Vector2(2, size.y)
+	left.color = Color(1, 1, 1, 0.15)
+	left.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(left)
+	var bottom := ColorRect.new()
+	bottom.name = "BottomShadow"
+	bottom.size = Vector2(size.x, 2)
+	bottom.position.y = size.y - 2
+	bottom.color = Color(0, 0, 0, 0.3)
+	bottom.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(bottom)
+	var right := ColorRect.new()
+	right.name = "RightShadow"
+	right.size = Vector2(2, size.y)
+	right.position.x = size.x - 2
+	right.color = Color(0, 0, 0, 0.15)
+	right.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(right)
+
 func _show_bevel(show: bool) -> void:
-	if has_node("Highlight"):
-		get_node("Highlight").visible = show
-	if has_node("Shadow"):
-		get_node("Shadow").visible = show
+	for child_name in ["TopHighlight", "LeftHighlight", "BottomShadow", "RightShadow"]:
+		if has_node(child_name):
+			get_node(child_name).visible = show

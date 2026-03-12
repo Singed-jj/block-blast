@@ -138,11 +138,15 @@ func get_board_rect() -> Rect2:
 
 func _draw() -> void:
 	var board_size := GRID_SIZE * CELL_SIZE
-	draw_rect(Rect2(-4, -4, board_size + 8, board_size + 8), Constants.BG_GRID.darkened(0.2), true)
-	for i in range(GRID_SIZE + 1):
+	# 보드 배경 (약간 어두운 테두리)
+	draw_rect(Rect2(-4, -4, board_size + 8, board_size + 8), Constants.BG_GRID.darkened(0.3), true)
+	# 내부 배경
+	draw_rect(Rect2(0, 0, board_size, board_size), Constants.BG_GRID, true)
+	# 그리드 라인 — 내부 구분선만 (외곽선은 배경 테두리로)
+	for i in range(1, GRID_SIZE):
 		var offset := i * CELL_SIZE
-		draw_line(Vector2(0, offset), Vector2(board_size, offset), Constants.GRID_LINE, 1.0)
-		draw_line(Vector2(offset, 0), Vector2(offset, board_size), Constants.GRID_LINE, 1.0)
+		draw_line(Vector2(0, offset), Vector2(board_size, offset), Constants.GRID_LINE, 1.0, true)
+		draw_line(Vector2(offset, 0), Vector2(offset, board_size), Constants.GRID_LINE, 1.0, true)
 
 func animate_clear(cleared_cells: Array[Vector2i], rows: Array[int], cols: Array[int]) -> void:
 	for pos in cleared_cells:
