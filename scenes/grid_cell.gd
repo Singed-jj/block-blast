@@ -27,7 +27,7 @@ func _update_visual() -> void:
 		_ensure_bevel()
 		_show_bevel(true)
 	else:
-		color = Constants.BG_GRID
+		color = Color.TRANSPARENT
 		_show_bevel(false)
 
 func _ensure_bevel() -> void:

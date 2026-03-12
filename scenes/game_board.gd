@@ -138,11 +138,9 @@ func get_board_rect() -> Rect2:
 
 func _draw() -> void:
 	var board_size := GRID_SIZE * CELL_SIZE
-	# 보드 배경 (약간 어두운 테두리)
-	draw_rect(Rect2(-4, -4, board_size + 8, board_size + 8), Constants.BG_GRID.darkened(0.3), true)
-	# 내부 배경
+	# 보드 배경
 	draw_rect(Rect2(0, 0, board_size, board_size), Constants.BG_GRID, true)
-	# 그리드 라인 — 내부 구분선만 (외곽선은 배경 테두리로)
+	# 그리드 라인 — 내부 구분선
 	for i in range(1, GRID_SIZE):
 		var offset := i * CELL_SIZE
 		draw_line(Vector2(0, offset), Vector2(board_size, offset), Constants.GRID_LINE, 1.0, true)

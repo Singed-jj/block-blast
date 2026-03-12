@@ -62,7 +62,7 @@ func _layout_pieces(piece_list: Array[Node2D]) -> void:
 		# 슬롯 폭에 맞춰 스케일 조정
 		var base_scale: float = piece.TRAY_SCALE
 		var bounding_at_base: Vector2 = piece.get_bounding_size() * base_scale
-		var max_piece_width := slot_width - 8.0  # 양쪽 4px 여백
+		var max_piece_width := slot_width - 16.0  # 양쪽 8px 여백
 		if bounding_at_base.x > max_piece_width:
 			base_scale = max_piece_width / piece.get_bounding_size().x
 		piece.scale = Vector2(base_scale, base_scale)
