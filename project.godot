@@ -22,6 +22,7 @@ config/features=PackedStringArray("4.6")
 
 Constants="*res://autoloads/constants.gd"
 GameState="*res://autoloads/game_state.gd"
+HapticManager="*res://autoloads/haptic_manager.gd"
 
 [display]
 

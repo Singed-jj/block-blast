@@ -26,12 +26,33 @@ func generate_new_set() -> void:
 		new_pieces.append(piece)
 		pieces.append(piece)
 	_layout_pieces(new_pieces)
+	# 바운스 + 페이드인 애니메이션
+	_animate_new_pieces(new_pieces)
 	# Sparkle effect on new set
 	for j in 5:
 		var sparkle := Label.new()
 		sparkle.set_script(preload("res://effects/tray_sparkle.gd"))
 		add_child(sparkle)
 		sparkle.show_sparkle(global_position + Vector2(size.x * randf(), 0))
+	# 햅틱
+	HapticManager.new_pieces()
+
+func _animate_new_pieces(piece_list: Array[Node2D]) -> void:
+	for i in piece_list.size():
+		var piece := piece_list[i]
+		var target_scale := piece.scale
+		# 시작 상태: 작고 투명
+		piece.scale = target_scale * 0.3
+		piece.modulate.a = 0.0
+		# 딜레이를 두고 순차 등장
+		var delay := i * 0.08
+		var tween := create_tween()
+		tween.tween_interval(delay)
+		tween.tween_property(piece, "modulate:a", 1.0, 0.15)
+		tween.parallel().tween_property(piece, "scale", target_scale * 1.1, 0.15)\
+			.set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_BACK)
+		tween.tween_property(piece, "scale", target_scale, 0.1)\
+			.set_ease(Tween.EASE_IN_OUT)
 
 func _layout_pieces(piece_list: Array[Node2D]) -> void:
 	var tray_width := size.x if size.x > 0 else 320.0

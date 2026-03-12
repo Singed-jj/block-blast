@@ -152,12 +152,23 @@ func animate_clear(cleared_cells: Array[Vector2i], rows: Array[int], cols: Array
 	for pos in cleared_cells:
 		if pos.y < cell_nodes.size() and pos.x < cell_nodes[pos.y].size():
 			var cell_node = cell_nodes[pos.y][pos.x]
+			var cell_color: Color = cell_node.color
+			# 페이드아웃
 			var tween := create_tween()
 			tween.tween_property(cell_node, "modulate:a", 0.0, 0.2)
 			tween.tween_callback(func():
 				cell_node.modulate.a = 1.0
 				cell_node.set_occupied(false, Color.TRANSPARENT)
 			)
+			# 파괴 파티클
+			var break_fx := Node2D.new()
+			break_fx.set_script(preload("res://effects/cell_break.gd"))
+			add_child(break_fx)
+			var world_pos := Vector2(
+				pos.x * CELL_SIZE + CELL_SIZE * 0.5,
+				pos.y * CELL_SIZE + CELL_SIZE * 0.5
+			)
+			break_fx.show_break(world_pos, cell_color)
 	for col in cols:
 		_show_gold_line(col)
 

@@ -46,10 +46,10 @@ func _on_piece_drag_ended(piece: Node2D) -> void:
 		return
 	current_drag_piece = null
 
-	# Calculate grid coordinates
+	# Calculate grid coordinates (roundi for better snapping sensitivity)
 	var local_pos := piece.global_position - game_board.global_position
-	var grid_col := int(local_pos.x / Constants.CELL_SIZE)
-	var grid_row := int(local_pos.y / Constants.CELL_SIZE)
+	var grid_col := roundi(local_pos.x / Constants.CELL_SIZE)
+	var grid_row := roundi(local_pos.y / Constants.CELL_SIZE)
 	var grid_pos := Vector2i(grid_col, grid_row)
 
 	# Clear highlights
@@ -60,25 +60,13 @@ func _on_piece_drag_ended(piece: Node2D) -> void:
 	else:
 		piece.snap_back()
 
-func _haptic_place() -> void:
-	Input.vibrate_handheld(30)
-
-func _haptic_line_clear(line_index: int, total_lines: int) -> void:
-	# Each successive line vibrates longer and stronger
-	var base_ms := 40
-	var duration := base_ms + line_index * 30
-	var delay := line_index * 0.15
-	get_tree().create_timer(delay).timeout.connect(
-		func(): Input.vibrate_handheld(duration)
-	)
-
 func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 	game_board.place_shape(piece.shape_cells, grid_pos, piece.block_color)
 	piece.mark_placed()
 	game_board.sync_visual()
 
 	# Haptic on placement
-	_haptic_place()
+	HapticManager.place_block()
 
 	# Check line clears
 	var lines: Dictionary = game_board.find_complete_lines()
@@ -90,17 +78,37 @@ func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 
 		# Haptic for each line cleared — escalating intensity
 		for i in total_lines:
-			_haptic_line_clear(i, total_lines)
+			HapticManager.line_clear(i, total_lines)
 
 		# Animate clear with gold lines for columns
 		game_board.animate_clear(cleared, lines["rows"], lines["cols"])
 
-		# Floating score effect
+		# Per-cell floating score numbers
+		var per_cell_points: int = points / max(cleared.size(), 1)
+		for idx in cleared.size():
+			var cell_pos: Vector2i = cleared[idx]
+			var world_pos := game_board.global_position + Vector2(
+				cell_pos.x * Constants.CELL_SIZE + Constants.CELL_SIZE * 0.5,
+				cell_pos.y * Constants.CELL_SIZE + Constants.CELL_SIZE * 0.5
+			)
+			var cell_label := Label.new()
+			cell_label.set_script(preload("res://effects/cell_score.gd"))
+			add_child(cell_label)
+			cell_label.show_cell_score(per_cell_points, world_pos, idx * 0.02)
+
+		# Floating score effect (total)
 		var float_score := Label.new()
 		float_score.set_script(preload("res://effects/floating_score.gd"))
 		add_child(float_score)
 		var board_center := game_board.global_position + Vector2(160, 160)
 		float_score.show_score(points, board_center)
+
+		# Board glow effect
+		var glow := Node2D.new()
+		glow.set_script(preload("res://effects/board_glow.gd"))
+		add_child(glow)
+		var glow_intensity := clampf(total_lines / 3.0, 0.5, 2.0)
+		glow.show_glow(game_board.get_board_rect(), glow_intensity)
 
 		# Feedback text (Good! / Great!)
 		var feedback := Label.new()
@@ -122,6 +130,7 @@ func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 			combo_label.set_script(preload("res://effects/combo_text.gd"))
 			add_child(combo_label)
 			combo_label.show_combo(GameState.combo, board_center + Vector2(0, -80))
+			HapticManager.combo(GameState.combo)
 	else:
 		GameState.reset_combo()
 
@@ -147,8 +156,8 @@ func _on_play_again() -> void:
 func _process(_delta: float) -> void:
 	if current_drag_piece:
 		var local_pos := current_drag_piece.global_position - game_board.global_position
-		var grid_col := int(local_pos.x / Constants.CELL_SIZE)
-		var grid_row := int(local_pos.y / Constants.CELL_SIZE)
+		var grid_col := roundi(local_pos.x / Constants.CELL_SIZE)
+		var grid_row := roundi(local_pos.y / Constants.CELL_SIZE)
 		var grid_pos := Vector2i(grid_col, grid_row)
 
 		game_board.clear_all_highlights()
