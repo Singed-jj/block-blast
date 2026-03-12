@@ -56,18 +56,27 @@ func trigger_game_over() -> void:
 
 func get_feedback_type(lines_cleared: int) -> String:
     if lines_cleared >= 2:
-        return "Great!"
-    return "Good!"
+        return "훌륭해!"
+    return "좋아!"
 
 func save_best_score() -> void:
-    var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
-    if file:
-        file.store_string(JSON.stringify({"best_score": best_score}))
+    if OS.has_feature("web"):
+        JavaScriptBridge.eval("localStorage.setItem('block_blast_best_score', '%d')" % best_score)
+    else:
+        var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+        if file:
+            file.store_string(JSON.stringify({"best_score": best_score}))
 
 func load_best_score() -> void:
-    if FileAccess.file_exists(SAVE_PATH):
-        var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
-        if file:
-            var data = JSON.parse_string(file.get_as_text())
-            if data and data.has("best_score"):
-                best_score = int(data["best_score"])
+    if OS.has_feature("web"):
+        var val = JavaScriptBridge.eval("localStorage.getItem('block_blast_best_score')")
+        if val != null and str(val) != "null":
+            best_score = int(val)
+            best_score_changed.emit(best_score)
+    else:
+        if FileAccess.file_exists(SAVE_PATH):
+            var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+            if file:
+                var data = JSON.parse_string(file.get_as_text())
+                if data and data.has("best_score"):
+                    best_score = int(data["best_score"])

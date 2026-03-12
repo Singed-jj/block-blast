@@ -1,7 +1,7 @@
 extends Label
 
 func show_combo(combo_count: int, start_pos: Vector2) -> void:
-	text = "Combo %d" % combo_count
+	text = "콤보 %d" % combo_count
 	global_position = start_pos
 	add_theme_font_size_override("font_size", 36)
 	add_theme_color_override("font_color", Constants.BEST_SCORE)

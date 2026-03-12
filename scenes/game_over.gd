@@ -37,7 +37,7 @@ func _style_elements() -> void:
 
 func show_game_over(score: int, best_score: int) -> void:
 	final_score_label.text = str(score)
-	best_score_label.text = "Best Score: %d" % best_score
+	best_score_label.text = "최고 점수: %d" % best_score
 	visible = true
 	modulate.a = 0.0
 	var tween := create_tween()
