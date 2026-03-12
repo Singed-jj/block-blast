@@ -21,21 +21,38 @@ func _ready() -> void:
 
 func _layout_game() -> void:
 	var vp_size := get_viewport_rect().size
-	var board_pixel := Constants.GRID_SIZE * Constants.CELL_SIZE  # 320
-	var board_x := (vp_size.x - board_pixel) / 2.0
-	var board_y := vp_size.y * 0.18
+	var board_pixel: float = Constants.GRID_SIZE * Constants.CELL_SIZE  # 320
+
+	# 보드를 뷰포트 폭의 85%로 스케일
+	var target_width := vp_size.x * 0.85
+	var board_scale := target_width / board_pixel
+	game_board.scale = Vector2(board_scale, board_scale)
+	var scaled_board := board_pixel * board_scale
+
+	var board_x := (vp_size.x - scaled_board) / 2.0
+
+	# 세로: HUD 아래 공간에서 보드+트레이를 중앙 배치
+	var hud_h := 90.0
+	var tray_h := 130.0
+	var gap := 28.0
+	var content_h := scaled_board + gap + tray_h
+	var available_h := vp_size.y - hud_h
+	var board_y := hud_h + (available_h - content_h) * 0.38
+
 	game_board.position = Vector2(board_x, board_y)
-	# 트레이: 보드 아래 여백, 보드 폭과 동일
-	var tray_y := board_y + board_pixel + 30
+
+	# 트레이: 스케일된 보드 아래 배치, 보드 폭과 동일
+	var tray_y := board_y + scaled_board + gap
 	piece_tray.offset_left = board_x
-	piece_tray.offset_right = board_x + board_pixel
+	piece_tray.offset_right = board_x + scaled_board
 	piece_tray.offset_top = tray_y
-	piece_tray.offset_bottom = tray_y + 120
-	# HUD: 뷰포트 전체 폭 사용
+	piece_tray.offset_bottom = tray_y + tray_h
+
+	# HUD: 뷰포트 전체 폭
 	hud.offset_left = 0
 	hud.offset_right = vp_size.x
 	hud.offset_top = 0
-	hud.offset_bottom = 130
+	hud.offset_bottom = hud_h
 
 func _start_new_game() -> void:
 	GameState.reset_game()
@@ -51,10 +68,11 @@ func _on_piece_drag_ended(piece: Node2D) -> void:
 		return
 	current_drag_piece = null
 
-	# Calculate grid coordinates (roundi for better snapping sensitivity)
+	# Calculate grid coordinates (스케일 보정 포함)
 	var local_pos := piece.global_position - game_board.global_position
-	var grid_col := roundi(local_pos.x / Constants.CELL_SIZE)
-	var grid_row := roundi(local_pos.y / Constants.CELL_SIZE)
+	var scaled_cell := Constants.CELL_SIZE * game_board.scale.x
+	var grid_col := roundi(local_pos.x / scaled_cell)
+	var grid_row := roundi(local_pos.y / scaled_cell)
 	var grid_pos := Vector2i(grid_col, grid_row)
 
 	# Clear highlights
@@ -89,12 +107,13 @@ func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 		game_board.animate_clear(cleared, lines["rows"], lines["cols"])
 
 		# Per-cell floating score numbers
+		var sc := game_board.scale.x
 		var per_cell_points: int = points / max(cleared.size(), 1)
 		for idx in cleared.size():
 			var cell_pos: Vector2i = cleared[idx]
 			var world_pos := game_board.global_position + Vector2(
-				cell_pos.x * Constants.CELL_SIZE + Constants.CELL_SIZE * 0.5,
-				cell_pos.y * Constants.CELL_SIZE + Constants.CELL_SIZE * 0.5
+				(cell_pos.x * Constants.CELL_SIZE + Constants.CELL_SIZE * 0.5) * sc,
+				(cell_pos.y * Constants.CELL_SIZE + Constants.CELL_SIZE * 0.5) * sc
 			)
 			var cell_label := Label.new()
 			cell_label.set_script(preload("res://effects/cell_score.gd"))
@@ -105,7 +124,8 @@ func _place_piece(piece: Node2D, grid_pos: Vector2i) -> void:
 		var float_score := Label.new()
 		float_score.set_script(preload("res://effects/floating_score.gd"))
 		add_child(float_score)
-		var board_center := game_board.global_position + Vector2(160, 160)
+		var half_board := Constants.GRID_SIZE * Constants.CELL_SIZE * 0.5 * sc
+		var board_center := game_board.global_position + Vector2(half_board, half_board)
 		float_score.show_score(points, board_center)
 
 		# Board glow effect
@@ -161,8 +181,9 @@ func _on_play_again() -> void:
 func _process(_delta: float) -> void:
 	if current_drag_piece:
 		var local_pos := current_drag_piece.global_position - game_board.global_position
-		var grid_col := roundi(local_pos.x / Constants.CELL_SIZE)
-		var grid_row := roundi(local_pos.y / Constants.CELL_SIZE)
+		var scaled_cell := Constants.CELL_SIZE * game_board.scale.x
+		var grid_col := roundi(local_pos.x / scaled_cell)
+		var grid_row := roundi(local_pos.y / scaled_cell)
 		var grid_pos := Vector2i(grid_col, grid_row)
 
 		game_board.clear_all_highlights()
